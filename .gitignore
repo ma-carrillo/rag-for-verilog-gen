@@ -1,2 +1,5 @@
 .langgraph_api/
 .env
+verilog-eval-wsl/
+outputs/
+.venv/
