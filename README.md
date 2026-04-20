@@ -2,18 +2,21 @@
 
 Retrieval-Augmented Generation (RAG) pipeline for Verilog code generation using large language models.
 
+By Miguel Ángel Carrillo Cobián for ECSE-689 (HLS) , Prof. Christophe Dubach.
+
 ---
 
 ## Repository Structure
 
-- **verilog-eval-wsl/**  
-  Modified fork of the [VerilogEval](https://github.com/NVlabs/verilog-eval) framework used to run experiments.
+- **verilog-eval-modifications/**  
+  Contains selected modifications from a fork of the [VerilogEval](https://github.com/NVlabs/verilog-eval) framework used to run experiments.
 
   Key modifications:
   - `scripts/rag_utils.py`: Core implementation of all RAG pipelines (vector, KG, hybrid).  
     *(This file does not exist in the original repository.)*
-  - `scripts/sv-generate`: Modified to integrate RAG during generation.
-  - Minor changes across other files to support retrieval-based workflows.
+  - `scripts/sv-generate`: Modified to integrate RAG into the generation pipeline.
+
+  Only these files are included due to the large size of the full repository. The complete modified fork and experimental outputs can be shared if necessary.
 
 - **explore_process_data.ipynb**  
   Notebook for dataset exploration and preprocessing.  
@@ -24,13 +27,11 @@ Retrieval-Augmented Generation (RAG) pipeline for Verilog code generation using 
 
 - **RTLCoder-processing.ipynb**  
   Notebook used for preprocessing the RTL-Coder dataset. Originally executed in a Databricks environment; output files are not included in the repository due to their size.
-    - The original **RTL-Coder dataset** is provided in CSV format.
-    - Due to its large size, preprocessing (including embedding generation and knowledge graph feature extraction) was performed using PySpark, and the resulting data is stored as Parquet files.
+  The original **RTL-Coder dataset** is provided in CSV format. Due to its large size, preprocessing (including embedding generation and knowledge graph feature extraction) was performed using PySpark, and the resulting data is stored as Parquet files.
 
 - **res_analysis.ipynb**  
   Notebook for analyzing experimental results.  
-  Results are generated in:  
-  `verilog-eval-wsl/build/`
+  Due to repository size constraints, generated results are not included, but can be reproduced using the provided pipeline or shared upon request.
 
 
 - **vector_csv_VERIRAG/**  
@@ -51,12 +52,12 @@ Retrieval-Augmented Generation (RAG) pipeline for Verilog code generation using 
 ### Requirements
 - OpenRouter account and API key
 
-### Example: Run 10 samples (Vanilla, no RAG)
+### Example: Running Full Benchmark (Vanilla, no RAG) using GPT 3.5 Turbo
 
 ```bash
 cd ~/verilog-eval-wsl && \
-mkdir -p build/openrouter-gpt35-my10-vanilla && \
-cd build/openrouter-gpt35-my10-vanilla && \
+mkdir -p build/openrouter-gpt35-vanilla && \
+cd build/openrouter-gpt35-vanilla && \
 export OPENROUTER_API_KEY="YOUR_API_KEY" && \
 ../../configure \
   --with-task=spec-to-rtl \
@@ -65,7 +66,6 @@ export OPENROUTER_API_KEY="YOUR_API_KEY" && \
   --with-samples=1 \
   --with-temperature=0 \
   --with-top-p=0.01 \
-  --with-problems=../../my10.txt \
   --with-rag=off && \
 make SHELL=/bin/bash -j1
 ````
@@ -78,25 +78,4 @@ Use the `--with-rag` flag to select retrieval strategy:
 * `--with-rag=vector` → Vector-based retrieval
 * `--with-rag=kg` → Knowledge graph retrieval
 * `--with-rag=hybrid` → Hybrid (KG + vector)
-
-### Running Full Benchmark
-
-* Remove:
-
-  ```bash
-  --with-problems=../../my10.txt
-  ```
-* This runs the **entire VerilogEval benchmark**
-
----
-
-## Notes
-
-* Temperature is set to **0** for deterministic generation.
-* Retrieval examples (`k`) are controlled internally in the pipeline configuration.
-* Results (logs, outputs) are stored in:
-
-  ```
-  verilog-eval-wsl/build/
-  ```
 
